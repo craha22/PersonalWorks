@@ -34,17 +34,14 @@ ggplot(deathsPerCountry, aes(x = deathsPerCountry$countries, y = deathsPerCountr
 attacks$Date <- strptime(attacks$Date, format = "%Y.%m.%d")
 
 attacks <-attacks[order(attacks$Date),]
-
+##Plot cum sum of Deaths
 ggplot(attacks, aes(x=attacks$Date,y=cumsum(attacks$Killed))) +geom_line() + xlab("Time") + ylab("Deaths by Islamic Terror Attacks") + ggtitle("Cumulative Deaths from Islamic Terrorism since 2011")
 
 library(tm)
 library(SnowballC)
 library(wordcloud)
-
+##Build worldcloud
 terrorCorpus <- Corpus(VectorSource(attacks$Description))
 terrorCorpus <- tm_map(terrorCorpus,PlainTextDocument)
 terrorCorpus <- tm_map(terrorCorpus, removeWords, c(stopwords('english'),"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"))
 wordcloud(terrorCorpus, max.words = 200, random.order = FALSE)
-
-
-
