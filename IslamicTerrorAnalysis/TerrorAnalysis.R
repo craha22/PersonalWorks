@@ -64,3 +64,19 @@ us$Latitude <- cities$lat
 map("state")
 points(us$Longitude,us$Latitude, pch = 20, col = "black", cex = log(us$Killed+us$Injured)+1, lwd = 1)
 title(main = "Islamic Terror Attacks on the US since 2011", sub = "Point Size Depends on Casualties")
+
+##Building World Map of Attacks
+##Note: Google API limits 2500 queries, did 2000
+##Removed the "Core" from analysis, Iraq and Syria
+
+##Removing Core
+outsideCore <- subset(attack, attack$Country != "Iraq")
+outsideCore <- subset(outsideCore, outsideCore$Country != "Syria")
+##Getting Recent 2000
+recentOutsideCore <- outsideCore[(nrow(outsideCore)-1999):nrow(outsideCore),]
+##Get Coordinates
+coordinates <- geocode(paste(recentOutsideCore$City, recentOutsideCore$Country, sep = " "))
+##Plot
+map("world")
+points(recentOutsideCore$Longitude,recentOutsideCore$Latitude, pch = 20, col = "black", cex = log((recentOutsideCore$Killed)/10)+1, lwd = 1)
+title(main = "The 2000 Most Recent Islamic Terror Attacks Outside Iraq and Syria \n Point Size Depends on Deaths", sub = "Point Size Depends on Deaths")
