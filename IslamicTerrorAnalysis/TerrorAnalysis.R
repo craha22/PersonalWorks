@@ -45,3 +45,22 @@ terrorCorpus <- Corpus(VectorSource(attacks$Description))
 terrorCorpus <- tm_map(terrorCorpus,PlainTextDocument)
 terrorCorpus <- tm_map(terrorCorpus, removeWords, c(stopwords('english'),"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"))
 wordcloud(terrorCorpus, max.words = 200, random.order = FALSE)
+
+##Looking at events in the US
+us <- subset(attack, attack$Country == "USA")
+##Cum Deaths
+ggplot(us, aes(x=us$Date,y=cumsum(us$Killed))) +geom_line() + xlab("Time") + ylab("Deaths by Islamic Terror") + ggtitle("Cumulative Deaths from Islamic Terrorism since 2011 in the US")
+##Cum Injured
+ggplot(us, aes(x=us$Date,y=cumsum(us$Injured))) +geom_line() + xlab("Time") + ylab("Injuries by Islamic Terror") + ggtitle("Cumulative Injured from Islamic Terrorism since 2011 in the US")
+
+##Building US Map of Attacks
+library(maps)
+library(ggmap)
+##Get coordinates
+cities <- geocode(us$City)
+us$Longitude <- cities$lon
+us$Latitude <- cities$lat
+##Plot states
+map("state")
+points(us$Longitude,us$Latitude, pch = 20, col = "black", cex = log(us$Killed+us$Injured)+1, lwd = 1)
+title(main = "Islamic Terror Attacks on the US since 2011", sub = "Point Size Depends on Casualties")
